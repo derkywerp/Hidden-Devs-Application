@@ -1,3 +1,5 @@
+-- Roblox: derkywerp
+-- Discord: derkywerp
 local Version = script.Version.Value
 -- 0 = Testing
 -- 1 = Official
@@ -23,11 +25,13 @@ local Datastore = {}
 local PlayerTroves = {}
 local IsShuttingDown = false
 
+-- Creates all of the instances required to load player data
 function Datastore:InitializePlayer(Player)
 	Datastore:_StartRecursiveInitialization(DataStructure, 'Data', nil, Player)
 	print('Successfully Initialized: ' .. Player.Name .. ' (' .. Player.UserId .. ')')
 end
 
+-- Loads the data from the datastore and unpacks it into the player data folder
 function Datastore:LoadData(Player)
 	local Success, ErrorMsg, Data
 	local Attempts = 0
@@ -50,6 +54,7 @@ function Datastore:LoadData(Player)
 	end
 end
 
+-- Packs the player data folder, and saves it to the datastore
 function Datastore:SaveData(Player)
 	local DataTable = Datastore:_PackFolder(Player.Data)
 
@@ -78,6 +83,7 @@ function Datastore:SaveData(Player)
 	until Attempts2 >= 10 or Success2
 end
 
+-- This iterates through all the data from the ChildrenData parameter, and creates instance inside the player data folder accordingly
 function Datastore:_StartRecursiveInitialization(ChildrenData, FolderName, ParentFolder, Player)
 	local Folder = Instance.new('Folder')
 
@@ -138,6 +144,7 @@ function Datastore:_PackFolder(Folder)
 	return Result
 end
 
+-- Unpacks the data from a data table into a folder
 function Datastore:_UnpackData(Player, DataTable, ParentFolder)
 	for Name, Value in pairs(DataTable) do
 		
@@ -177,6 +184,7 @@ function Datastore:_UnpackData(Player, DataTable, ParentFolder)
 	end
 end
 
+-- Function to handle the player upon joining the game
 function Datastore:_PlayerAdded(Player)
 	local PlayerTrove = Trove.new()
 	PlayerTroves[Player] = PlayerTrove
@@ -208,6 +216,7 @@ function Datastore:_PlayerAdded(Player)
 	end
 end
 
+-- Function to handle the player leaving the game
 function Datastore:_PlayerRemoving(Player)
 	if IsShuttingDown then return end
 
@@ -221,6 +230,7 @@ function Datastore:_PlayerRemoving(Player)
 	end
 end
 
+-- Function used to ensure data saves when the player leaves
 function Datastore:SaveAllData()
 	IsShuttingDown = true
 
